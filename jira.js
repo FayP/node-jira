@@ -70,7 +70,6 @@ var JiraApi = exports.JiraApi = function(protocol, host, port, username, passwor
                     Cookie: self.cookies.join(';')
                 }
             };
-
             request(options, function(error, response, body) {
                 if (response.statusCode === 404) {
                     callback('Invalid issue number.');
@@ -207,4 +206,113 @@ var JiraApi = exports.JiraApi = function(protocol, host, port, username, passwor
             });
         });
     };
+     /**
+     * Create a new Issue should look like the following:
+     *
+     * {
+     *   "fields": {
+     *      "project":
+     *          { 
+     *              "key": "TTP"
+     *          },
+     *      "summary": "testing creating an issue....",
+     *      "description": "Fay P finally got it work wohoo",
+     *      "issuetype": {
+     *      "name": "Site Fix"
+     *    }
+     *  }
+     * 
+     *
+     * @param data
+     * @param errorCallback
+     * @param successCallback
+     */
+    this.createIssue = function(data, callback){
+        var self = this;
+        this.login(function() {
+            var options = {
+                uri: url.format({
+                    protocol: self.protocol,
+                    host: self.host,
+                    port: self.port,
+                    pathname: 'rest/api/' + self.apiVersion + "/issue/TT-3"
+                }),
+                method: 'POST',
+                headers: {
+                    Cookie: self.cookies.join(';')
+                },
+                json: true,
+                body: data
+            };
+
+        request(options, function(error, response, body) {
+                if (response.statusCode === 404) {
+                    callback('Invalid project.');
+                    return;
+                }
+
+                if (response.statusCode !== 200) {
+                    callback(response.statusCode + ': Unable to connect to JIRA during createIssue.');
+                    return;
+                }
+                callback(null);
+            });
+        });
+    };
+    /**
+     * Create a new Issue should look like the following:
+     *
+     * {
+     *   "fields": {
+     *      "project":
+     *          { 
+     *              "key": "TTP"
+     *          },
+     *      "summary": "testing creating an issue....",
+     *      "description": "Fay P finally got it work wohoo",
+     *      "issuetype": {
+     *      "name": "Site Fix"
+     *    }
+     *  }
+     * 
+     *
+     * @param data
+     * @param issueKey
+     * @param errorCallback
+     * @param successCallback
+     */
+    this.updateIssue = function(issueKey, updateData, callback){
+        var self = this;
+        //Put back with changes
+       this.login(function() {
+            var options = {
+                uri: url.format({
+                    protocol: self.protocol,
+                    host: self.host,
+                    port: self.port,
+                    pathname: 'rest/api/' + self.apiVersion + "/issue/" + issueKey
+                }),
+                method: 'PUT',
+                headers: {
+                    Cookie: self.cookies.join(';')
+                },
+                json: true,
+                body: updateData
+            };
+
+        request(options, function(error, response, body) {
+                if (response.statusCode === 404) {
+                    callback('Invalid project.');
+                    return;
+                }
+
+                if (response.statusCode !== 200) {
+                    callback(response.statusCode + ': Unable to connect to JIRA during updateIssue.');
+                    return;
+                }
+                callback(null);
+            });
+        }); 
+    };
+
 }).call(JiraApi.prototype);
