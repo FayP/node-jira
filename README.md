@@ -40,11 +40,14 @@ Currently there is no explicit login call necessary as each API call makes a cal
 * Pulling a project
 * Pulling unresolved issues count for a specific version
 * Issue linking
+* Updating Issues
+* Creating Issues
 
 ## TODO
 
 * API docs
  * Better most methods are currently undocumented
+ * detailed JSON examples for common cases
 * Tests
 * Refactor currently implemented APIs to be more Object Oriented
 * Refactor to make use of built-in node.js events and classes
